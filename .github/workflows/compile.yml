@@ -22,7 +22,7 @@ jobs:
         run: mvn clean package --batch-mode
 
       - name: Upload Compiled JAR Artifact
-        uses: actions/uses/upload-artifact@v4
+        uses: actions/upload-artifact@v4
         with:
           name: paper-plugin-jar
           path: target/*.jar
