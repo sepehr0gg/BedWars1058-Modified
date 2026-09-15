@@ -19,10 +19,14 @@ jobs:
           cache: maven
 
       - name: Build with Maven
-        run: mvn clean package --batch-mode
+        run: mvn clean package --batch-mode -DskipTests
 
       - name: Upload Compiled JAR Artifact
         uses: actions/upload-artifact@v4
         with:
           name: paper-plugin-jar
-          path: target/*.jar
+          path: |
+            **/target/*.jar
+            !**/target/*-sources.jar
+            !**/target/*-javadoc.jar
+            !**/target/original-*.jar
