@@ -29,9 +29,9 @@
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.google.common/google-collect -->
         <dependency>
-            <groupId>com.google.common</groupId>
-            <artifactId>google-collect</artifactId>
-            <version>1.0</version>
+           <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>31.1-jre</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
