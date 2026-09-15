@@ -20,10 +20,6 @@
             <id>andrei-prod</id>
             <url>https://repo.andrei1058.com/releases</url>
         </repository>
-        <repository>
-            <id>central</id>
-            <url>https://repo.maven.apache.org/maven2</url>
-        </repository>
     </repositories>
 
     <dependencies>
