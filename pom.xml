@@ -15,23 +15,28 @@
     </properties>
 
     <repositories>
-        <!--Bungeecord Repo-->
-        <!--Only include if using the Spigot API dependency-->
+        <!-- SpigotMC Repository (for bungeecord-chat and Spigot APIs) -->
         <repository>
-            <id>bungeecord-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <id>spigotmc-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
-        <!--        <repository>-->
-        <!--            <id>gitlab-maven</id>-->
-        <!--            <url>https://gitlab.com/api/v4/groups/4800570/-/packages/maven</url>-->
-        <!--        </repository>-->
-        <!--        <repository>-->
-        <!--            <id>vipfeatures-maven</id>-->
-        <!--            <url>https://gitlab.com/api/v4/projects/6491858/packages/maven</url>-->
-        <!--        </repository>-->
+
+        <!-- CodeMC Public Repository (for BedWars dependencies and sidebar-base) -->
+        <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+        </repository>
+
+        <!-- CodeMC NMS Repository -->
         <repository>
             <id>codemc-nms</id>
             <url>https://repo.codemc.io/repository/nms/</url>
+        </repository>
+
+        <!-- JitPack (Fallback for GitHub dependencies) -->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -116,15 +121,4 @@
         <module>versionsupport_v1_20_R3</module>
         <module>versionsupport_v1_20_R4</module>
     </modules>
-
-    <distributionManagement>
-        <repository>
-            <id>andrei1058-repo</id>
-            <url>https://repo.andrei1058.com/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>andrei1058-repo</id>
-            <url>https://repo.andrei1058.com/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>
