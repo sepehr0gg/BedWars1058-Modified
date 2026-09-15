@@ -17,6 +17,10 @@
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
+            <id>commons-repo</id>
+            <url>https://repo.fusesource.com/nexus/content/repositories/releases-3rd-party/</url>
+        </repository>
+        <repository>
             <id>andrei-prod</id>
             <url>https://repo.andrei1058.com/releases</url>
         </repository>
