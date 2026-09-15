@@ -35,6 +35,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import static com.andrei1058.bedwars.BedWars.nms;
@@ -60,9 +61,19 @@ public class InventoryListener implements Listener {
         if (cache == null) return;
         if (shopCache == null) return;
 
-        if(ShopIndex.getIndexViewers().contains(p.getUniqueId()) || ShopCategory.getCategoryViewers().contains(p.getUniqueId())) {
-            if (e.getClickedInventory() != null && e.getClickedInventory().getType().equals(InventoryType.PLAYER)) {
+        // Shop is open: let players rearrange their own inventory, but never let items
+        // enter the shop GUI (shift-click, number keys, double-click collect, etc.).
+        if (isShopGuiOpen(p)) {
+            Inventory clicked = e.getClickedInventory();
+            if (clicked == null) {
                 e.setCancelled(true);
+                return;
+            }
+            if (clicked.equals(e.getView().getBottomInventory())) {
+                if (shouldCancelBottomInventoryClick(e)) {
+                    e.setCancelled(true);
+                }
+                // Player-inventory slots must not be handled as shop slots.
                 return;
             }
         }
@@ -126,6 +137,63 @@ public class InventoryListener implements Listener {
             }
             e.getWhoClicked().closeInventory();
         }
+    }
+
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent e) {
+        if (e.isCancelled()) return;
+        if (!(e.getWhoClicked() instanceof Player)) return;
+
+        Player p = (Player) e.getWhoClicked();
+        if (!isShopGuiOpen(p)) return;
+
+        int topSize = e.getView().getTopInventory().getSize();
+        for (int rawSlot : e.getRawSlots()) {
+            // Raw slots below the top inventory size belong to the shop GUI.
+            if (rawSlot < topSize) {
+                e.setCancelled(true);
+                return;
+            }
+        }
+    }
+
+    private static boolean isShopGuiOpen(Player player) {
+        return ShopIndex.getIndexViewers().contains(player.getUniqueId())
+                || ShopCategory.getCategoryViewers().contains(player.getUniqueId())
+                || QuickBuyAdd.getQuickBuyAdds().containsKey(player.getUniqueId());
+    }
+
+    /**
+     * Bottom-inventory clicks that would move items into the shop GUI, steal shop icons,
+     * or swap hotbar contents with shop slots must stay cancelled.
+     */
+    private static boolean shouldCancelBottomInventoryClick(InventoryClickEvent e) {
+        ClickType click = e.getClick();
+        InventoryAction action = e.getAction();
+
+        // Shift-click moves the stack into the first empty slot of the top inventory.
+        if (click == ClickType.SHIFT_LEFT || click == ClickType.SHIFT_RIGHT) {
+            return true;
+        }
+        if (action == MOVE_TO_OTHER_INVENTORY) {
+            return true;
+        }
+
+        // Double-click collects matching items from every open inventory, including shop icons.
+        if (click == ClickType.DOUBLE_CLICK || action == InventoryAction.COLLECT_TO_CURSOR) {
+            return true;
+        }
+
+        // Number keys swap the hovered slot with a hotbar slot. On custom GUIs this can
+        // pull shop items into the hotbar or push player items into shop slots.
+        if (click == ClickType.NUMBER_KEY || action == HOTBAR_SWAP
+                || action == InventoryAction.HOTBAR_MOVE_AND_READD) {
+            return true;
+        }
+
+        // SWAP_WITH_CURSOR on the bottom inventory only rearranges the player's own items.
+        // The same action on the top inventory is already cancelled by the shop click handler.
+        return false;
     }
 
     @EventHandler
